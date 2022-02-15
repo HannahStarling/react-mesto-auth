@@ -9,6 +9,8 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ConfirmPopup from './ConfirmPopup';
+import { Route } from 'react-router-dom';
+import ProtectedRoute from './ProtectedRoute';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -136,10 +138,14 @@ function App() {
   }
 
   return (
-    <CurrentUserContext.Provider value={currentUser}>
-      <div className='page root__page'>
+    <div className='page root__page'>
+      <CurrentUserContext.Provider value={currentUser}>
         <Header />
-        <Main
+        <ProtectedRoute
+          exact
+          path='/'
+          loggedIn={true}
+          component={Main}
           selectDeletedCard={setDeletedId}
           onDeleteConfirm={handleConfirmDelete}
           onCardDelete={handleCardDelete}
@@ -161,8 +167,10 @@ function App() {
           deletedId={deletedId}
         />
         <ImagePopup onClose={closeAllPopups} card={selectedCard} />
-      </div>
-    </CurrentUserContext.Provider>
+      </CurrentUserContext.Provider>
+      <Route path='/sign-up' />
+      <Route path='/sign-in' />
+    </div>
   );
 }
 
