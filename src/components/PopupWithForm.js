@@ -1,7 +1,8 @@
 import React from 'react';
+import Form from './Form';
 import Popup from './Popup';
 
-function PopupWithForm({ hasInput, name, isOpen, title, children, onClose, buttonText, onSubmit, ...props }) {
+function PopupWithForm({ name, isOpen, onClose, ...props }) {
   return (
     <Popup
       isOpen={isOpen}
@@ -10,15 +11,7 @@ function PopupWithForm({ hasInput, name, isOpen, title, children, onClose, butto
       btnAriaText='Закрыть форму.'
       className={`${isOpen ? `popup_type_${name} popup_opened` : `popup_type_${name}`}`}
     >
-      <form onSubmit={onSubmit} className='popup__form' id='card' name={name}>
-        <h2 className={`popup__title ${hasInput ? '' : 'popup__title_type_noinputs'}`}>{title}</h2>
-        <fieldset className='popup__input-container'>
-          {children}
-          <button className='button popup__btn popup__btn_action_submit' type='submit'>
-            {buttonText}
-          </button>
-        </fieldset>
-      </form>
+      <Form formBlockClass='popup' name={name} {...props} />
     </Popup>
   );
 }
