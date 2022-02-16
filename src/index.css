@@ -84,3 +84,6 @@
 @import url(./blocks/popup/__input-error/_active/popup__input-error_active.css);
 @import url(./blocks/popup/__input-label/popup__input-label.css);
 @import url(./blocks/popup/__btn/_inactive/popup__btn_inactive.css);
+
+@import url(./blocks/popup/__infotooltip/popup__infotooltip.css);
+@import url(./blocks/popup/__title/_type/popup__title_type_centered.css);

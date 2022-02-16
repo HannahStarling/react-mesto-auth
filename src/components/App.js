@@ -14,12 +14,14 @@ import ProtectedRoute from './ProtectedRoute';
 import Content from './Content';
 import Register from './Register';
 import Login from './Login';
+import InfoTooltip from './InfoTooltip';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [deletedId, setDeletedId] = useState('');
   const [selectedCard, setSelectedCard] = useState({ name: '', link: '' });
   const [currentUser, setCurrentUser] = useState({
@@ -122,6 +124,9 @@ function App() {
     if (selectedCard.name && selectedCard.link) {
       setSelectedCard({ name: '', link: '' });
     }
+    if (isInfoTooltipOpen === true) {
+      setIsInfoTooltipOpen(!isInfoTooltipOpen);
+    }
   }
 
   function handleConfirmDelete() {
@@ -170,6 +175,7 @@ function App() {
           </Switch>
         </Main>
         <Footer />
+        <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopups} />
         <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
         <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
         <AddPlacePopup onAddCard={handleAddCard} isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} />
