@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Form from './Form';
 
 function Register({ handleSubmit, ...props }) {
@@ -39,6 +40,12 @@ function Register({ handleSubmit, ...props }) {
           <span className='login__input-error login__input-error_type_password'></span>
         </label>
       </Form>
+      <p className='login__signin'>
+        Уже зарегистрированы?&nbsp;
+        <Link to='sign-in' className='login__signin-link link-opacity'>
+          Войти
+        </Link>
+      </p>
     </section>
   );
 }

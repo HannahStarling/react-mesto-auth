@@ -144,8 +144,8 @@ function App() {
     <div className='page root__page'>
       <CurrentUserContext.Provider value={currentUser}>
         <Header />
-        <Switch>
-          <Main>
+        <Main>
+          <Switch>
             <ProtectedRoute
               exact
               path='/'
@@ -167,8 +167,8 @@ function App() {
             <Route path='/sign-in'>
               <Login />
             </Route>
-          </Main>
-        </Switch>
+          </Switch>
+        </Main>
         <Footer />
         <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
         <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
