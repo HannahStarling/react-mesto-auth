@@ -3,7 +3,7 @@ import Form from './Form';
 
 function Login({ handleSubmit, ...props }) {
   return (
-    <section className='sign-up content__center'>
+    <section className='login content__center'>
       <Form
         formBlockClass='login'
         hasInput={true}
