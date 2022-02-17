@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://api.nomoreparties.co';
+export const BASE_URL = 'https://auth.nomoreparties.co';
 
 function prepareData(res) {
   return res.ok
@@ -17,32 +17,21 @@ export const register = (password, email) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ password, email }),
-  })
-    .then(prepareData)
-    .then((res) => {
-      return res;
-    })
-    .catch((err) => console.log(err));
+  }).then(prepareData);
 };
-export const authorize = (identifier, password) => {
+
+export const authorize = (password, email) => {
   return fetch(`${BASE_URL}/signin`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ identifier, password }),
-  })
-    .then(prepareData)
-    .then(({ token }) => {
-      if (token) {
-        localStorage.setItem('jwt', token);
-        return token;
-      }
-    })
-    .catch((err) => console.log(err));
+    body: JSON.stringify({ password, email }),
+  }).then(prepareData);
 };
-export const checkToken = (token) => {
+
+export const getContent = (token) => {
   return fetch(`${BASE_URL}/users/me`, {
     method: 'GET',
     headers: {
