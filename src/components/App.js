@@ -15,6 +15,7 @@ import Content from './Content';
 import Register from './Register';
 import Login from './Login';
 import InfoTooltip from './InfoTooltip';
+import * as auth from '../utils/auth';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
