@@ -6,10 +6,10 @@ function PopupWithForm({ name, isOpen, onClose, ...props }) {
   return (
     <Popup
       isOpen={isOpen}
-      isForm={true}
+      containerType='popup__container_type_white'
       onClose={onClose}
       btnAriaText='Закрыть форму.'
-      className={`${isOpen ? `popup_type_${name} popup_opened` : `popup_type_${name}`}`}
+      className={`popup_type_${name} ${isOpen ? `popup_opened` : ``}`.trim()}
     >
       <Form formBlockClass='popup' name={name} {...props} />
     </Popup>

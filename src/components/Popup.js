@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-function Popup({ isOpen, isForm, btnAriaText, onClose, className, children, ...props }) {
+function Popup({ isOpen, containerType, btnAriaText, onClose, className, children, ...props }) {
   useEffect(() => {
     if (!isOpen) return;
     function closeByEscape(e) {
@@ -21,11 +21,8 @@ function Popup({ isOpen, isForm, btnAriaText, onClose, className, children, ...p
   }
 
   return (
-    <section className={`popup page__popup ${className}`} onClick={handleClick}>
-      <div
-        className={`popup__container ${isForm ? '' : 'popup__container_type_image'}`.trim()}
-        onClick={stopHandleClick}
-      >
+    <section className={`popup page__popup ${className}`.trim()} onClick={handleClick}>
+      <div className={`popup__container ${containerType}`} onClick={stopHandleClick}>
         {children}
         <button
           onClick={onClose}

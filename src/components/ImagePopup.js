@@ -5,7 +5,7 @@ function ImagePopup({ card, onClose }) {
   return (
     <Popup
       isOpen={card.name && card.link}
-      isForm={false}
+      containerType='popup__container_type_transparent'
       onClose={onClose}
       className={`${card.name && card.link ? `popup_type_image popup_opened` : `popup_type_image`}`}
     >
