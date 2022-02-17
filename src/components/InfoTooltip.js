@@ -3,9 +3,7 @@ import Popup from './Popup';
 import successIcon from '../images/success-icon.svg';
 import failedIcon from '../images/failed-icon.svg';
 
-function InfoTooltip({ isOpen, onClose, name }) {
-  /* временный hardcore отрисовки */
-  const isSuccess = true;
+function InfoTooltip({ isSuccess, isOpen, onClose, name }) {
   return (
     <Popup
       isOpen={isOpen}
@@ -14,7 +12,6 @@ function InfoTooltip({ isOpen, onClose, name }) {
       btnAriaText='Закрыть.'
       className={`${isOpen ? `popup_opened` : ``}`.trim()}
     >
-      {/* рефакторинг классов - сокращение кода */}
       <div className='popup__infotooltip'>
         {isSuccess ? (
           <>
