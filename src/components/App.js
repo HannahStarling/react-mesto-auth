@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { Route, Switch, useHistory } from 'react-router-dom';
+import api from '../utils/Api';
+import * as auth from '../utils/auth';
 import CurrentUserContext from '../context/CurrentUserContext';
 import Footer from './Footer';
 import Header from './Header';
 import ImagePopup from './ImagePopup';
 import Main from './Main';
-import api from '../utils/Api';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ConfirmPopup from './ConfirmPopup';
-import { Route, Switch } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import Content from './Content';
 import Register from './Register';
 import Login from './Login';
 import InfoTooltip from './InfoTooltip';
-import * as auth from '../utils/auth';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -23,6 +23,9 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+  const [isRegistrationSuccess, setIsRegistrationSuccess] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [email, setEmail] = useState('');
   const [deletedId, setDeletedId] = useState('');
   const [selectedCard, setSelectedCard] = useState({ name: '', link: '' });
   const [currentUser, setCurrentUser] = useState({
@@ -31,6 +34,59 @@ function App() {
     avatar: '',
   });
   const [cards, setCards] = useState([]);
+  const history = useHistory();
+
+  useEffect(() => {
+    function tokenCheck() {
+      const jwt = localStorage.getItem('jwt');
+
+      if (jwt) {
+        auth
+          .getContent(jwt)
+          .then((res) => {
+            if (res) {
+              setLoggedIn(true);
+              setEmail(res.data.email);
+              history.push('/');
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    }
+    tokenCheck();
+  }, [history]);
+
+  function handleRegistration(password, email) {
+    auth
+      .register(password, email)
+      .then((result) => {
+        setEmail(result.data.email);
+        setIsRegistrationSuccess(true);
+        history.push('/sign-in');
+      })
+      .catch(() => setIsRegistrationSuccess(false))
+      .finally(() => setIsInfoTooltipOpen(true));
+  }
+
+  function handleLogin(password, email) {
+    auth
+      .authorize(password, email)
+      .then(({ token }) => {
+        if (!token) return;
+        localStorage.setItem('jwt', token);
+        auth.getContent(token).then((res) => {
+          setEmail(res.data.email);
+          setLoggedIn(true);
+          history.push('/');
+        });
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function onSignOut() {
+    localStorage.removeItem('jwt');
+    setLoggedIn(false);
+  }
 
   useEffect(() => {
     api
@@ -149,13 +205,13 @@ function App() {
   return (
     <div className='page root__page'>
       <CurrentUserContext.Provider value={currentUser}>
-        <Header />
+        <Header loggedIn={loggedIn} email={email} onSignOut={onSignOut} />
         <Main>
           <Switch>
             <ProtectedRoute
               exact
               path='/'
-              loggedIn={false}
+              loggedIn={loggedIn}
               component={Content}
               selectDeletedCard={setDeletedId}
               onDeleteConfirm={handleConfirmDelete}
@@ -168,15 +224,15 @@ function App() {
               cards={cards}
             />
             <Route path='/sign-up'>
-              <Register />
+              <Register onSignUp={handleRegistration} isInfoTooltipOpen={isInfoTooltipOpen} />
             </Route>
             <Route path='/sign-in'>
-              <Login />
+              <Login onSignIn={handleLogin} />
             </Route>
           </Switch>
         </Main>
         <Footer />
-        <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopups} />
+        <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopups} isSuccess={isRegistrationSuccess} />
         <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
         <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
         <AddPlacePopup onAddCard={handleAddCard} isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} />

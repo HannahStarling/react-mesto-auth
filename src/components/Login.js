@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Form from './Form';
 
-function Login({ handleSubmit, ...props }) {
+function Login({ onSignIn, ...props }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+    name === 'email' ? setEmail(value) : setPassword(value);
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    onSignIn(password, email);
+  }
+
   return (
     <section className='login content__center'>
       <Form
@@ -14,7 +27,8 @@ function Login({ handleSubmit, ...props }) {
       >
         <label className='login__input-label'>
           <input
-            defaultValue=''
+            value={email}
+            onChange={handleChange}
             autoComplete='off'
             type='email'
             className='login__item'
@@ -27,7 +41,8 @@ function Login({ handleSubmit, ...props }) {
         </label>
         <label className='login__input-label'>
           <input
-            defaultValue=''
+            value={password}
+            onChange={handleChange}
             autoComplete='off'
             type='password'
             className='login__item'
