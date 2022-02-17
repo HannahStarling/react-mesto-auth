@@ -1,43 +1,29 @@
 export const BASE_URL = 'https://auth.nomoreparties.co';
 
-function prepareData(res) {
+const prepareData = (res) => {
   return res.ok
     ? res.json()
     : Promise.reject({
         name: `Произошла ошибка на стороне сервера: ${res.status}, попробуйте снова.`,
         isServerError: true,
       });
-}
+};
 
-export const register = (password, email) => {
-  return fetch(`${BASE_URL}/signup`, {
-    method: 'POST',
+const request = ({ url, method = 'POST', token, body }) => {
+  const config = {
+    method,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      ...(!!token && { Authorization: `Bearer ${token}` }),
     },
-    body: JSON.stringify({ password, email }),
-  }).then(prepareData);
+    ...(!!body && { body: JSON.stringify(body) }),
+  };
+  return fetch(`${BASE_URL}${url}`, config).then(prepareData);
 };
 
-export const authorize = (password, email) => {
-  return fetch(`${BASE_URL}/signin`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ password, email }),
-  }).then(prepareData);
-};
+export const register = (password, email) => request({ url: '/signup', body: { password, email } });
 
-export const getContent = (token) => {
-  return fetch(`${BASE_URL}/users/me`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  }).then(prepareData);
-};
+export const authorize = (password, email) => request({ url: '/signin', body: { password, email } });
+
+export const getContent = (token) => request({ url: '/users/me', method: 'GET', token });
