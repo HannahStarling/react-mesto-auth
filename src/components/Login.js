@@ -1,61 +1,8 @@
-import React, { useState } from 'react';
-import Form from './Form';
+import React from 'react';
+import AuthForm from './AuthForm';
 
 function Login({ onSignIn, ...props }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  function handleChange(e) {
-    const { name, value } = e.target;
-    name === 'email' ? setEmail(value) : setPassword(value);
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    onSignIn(password, email);
-  }
-
-  return (
-    <section className='login content__center'>
-      <Form
-        formBlockClass='login'
-        hasInput={true}
-        onSubmit={handleSubmit}
-        name='sign-in'
-        title='Вход'
-        buttonText='Войти'
-      >
-        <label className='login__input-label'>
-          <input
-            value={email}
-            onChange={handleChange}
-            autoComplete='off'
-            type='email'
-            className='login__item'
-            id='email'
-            name='email'
-            placeholder='Email'
-            required
-          />
-          <span className='login__input-error login__input-error_type_email'></span>
-        </label>
-        <label className='login__input-label'>
-          <input
-            value={password}
-            onChange={handleChange}
-            autoComplete='off'
-            type='password'
-            className='login__item'
-            id='password'
-            name='password'
-            placeholder='Пароль'
-            required
-          />
-          <span className='login__input-error login__input-error_type_password'></span>
-        </label>
-      </Form>
-    </section>
-  );
+  return <AuthForm onAuth={onSignIn} name='sign-in' title='Вход' buttonText='Войти' />;
 }
 
 export default Login;
