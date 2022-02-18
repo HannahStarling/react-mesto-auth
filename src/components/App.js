@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import api from '../utils/Api';
 import * as auth from '../utils/auth';
@@ -16,6 +16,7 @@ import Content from './Content';
 import Register from './Register';
 import Login from './Login';
 import InfoTooltip from './InfoTooltip';
+import ErrorMessage from './ErrorMessage';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -34,7 +35,52 @@ function App() {
     avatar: '',
   });
   const [cards, setCards] = useState([]);
+  const [error, setError] = useState({ isServerError: false, errorName: '' });
+  const [isErrorPopupOpen, setIsErrorPopupOpen] = useState(false);
   const history = useHistory();
+
+  const closeAllPopups = useCallback(() => {
+    if (isEditProfilePopupOpen === true) {
+      setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
+    }
+    if (isEditAvatarPopupOpen === true) {
+      setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
+    }
+    if (isAddPlacePopupOpen === true) {
+      setIsAddPlacePopupOpen(!isAddPlacePopupOpen);
+    }
+    if (isConfirmPopupOpen === true) {
+      setIsConfirmPopupOpen(!isConfirmPopupOpen);
+    }
+    if (selectedCard.name && selectedCard.link) {
+      setSelectedCard({ name: '', link: '' });
+    }
+    if (isInfoTooltipOpen === true) {
+      setIsInfoTooltipOpen(!isInfoTooltipOpen);
+    }
+  }, [
+    isEditProfilePopupOpen,
+    isEditAvatarPopupOpen,
+    isAddPlacePopupOpen,
+    isConfirmPopupOpen,
+    selectedCard,
+    isInfoTooltipOpen,
+  ]);
+
+  const showError = useCallback(
+    ({ name, isServerError, ...err }) => {
+      closeAllPopups();
+      setError((prevState) => {
+        return { ...prevState, errorName: name, isServerError };
+      });
+      setIsErrorPopupOpen(!isErrorPopupOpen);
+    },
+    [closeAllPopups, isErrorPopupOpen]
+  );
+
+  const closeError = () => {
+    setIsErrorPopupOpen(!isErrorPopupOpen);
+  };
 
   useEffect(() => {
     function tokenCheck() {
@@ -50,11 +96,11 @@ function App() {
               history.push('/');
             }
           })
-          .catch((err) => console.log(err));
+          .catch(showError);
       }
     }
     tokenCheck();
-  }, [history]);
+  }, [history, showError]);
 
   function handleRegistration(password, email) {
     auth
@@ -80,7 +126,7 @@ function App() {
           history.push('/');
         });
       })
-      .catch((err) => console.log(err));
+      .catch(showError);
   }
 
   function onSignOut() {
@@ -96,10 +142,8 @@ function App() {
         setCurrentUser(info);
         setCards(cards);
       })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+      .catch(showError);
+  }, [showError]);
 
   function handleAddCard(newCard) {
     api
@@ -108,9 +152,7 @@ function App() {
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch(showError);
   }
 
   function handleUpdateAvatar(currentUserAvatar) {
@@ -120,9 +162,7 @@ function App() {
         setCurrentUser(avatar);
         closeAllPopups();
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch(showError);
   }
 
   function handleUpdateUser(currentUserInfo) {
@@ -132,9 +172,7 @@ function App() {
         setCurrentUser(info);
         closeAllPopups();
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch(showError);
   }
 
   function handleCardDelete() {
@@ -144,9 +182,7 @@ function App() {
         setCards((cards) => cards.filter((c) => c._id !== deletedId));
         closeAllPopups();
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch(showError);
   }
 
   function handleCardLike({ likes, id }) {
@@ -156,34 +192,11 @@ function App() {
       .then((newCard) => {
         setCards((state) => state.map((c) => (c._id === id ? newCard : c)));
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch(showError);
   }
 
   function handleCardClick(card) {
     setSelectedCard(card);
-  }
-
-  function closeAllPopups() {
-    if (isEditProfilePopupOpen === true) {
-      setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
-    }
-    if (isEditAvatarPopupOpen === true) {
-      setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
-    }
-    if (isAddPlacePopupOpen === true) {
-      setIsAddPlacePopupOpen(!isAddPlacePopupOpen);
-    }
-    if (isConfirmPopupOpen === true) {
-      setIsConfirmPopupOpen(!isConfirmPopupOpen);
-    }
-    if (selectedCard.name && selectedCard.link) {
-      setSelectedCard({ name: '', link: '' });
-    }
-    if (isInfoTooltipOpen === true) {
-      setIsInfoTooltipOpen(!isInfoTooltipOpen);
-    }
   }
 
   function handleConfirmDelete() {
@@ -232,6 +245,12 @@ function App() {
           </Switch>
         </Main>
         <Footer />
+        <ErrorMessage
+          isServerError={error.isServerError}
+          message={error.errorName}
+          isOpen={isErrorPopupOpen}
+          onClose={closeError}
+        />
         <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopups} isSuccess={isRegistrationSuccess} />
         <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
         <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />

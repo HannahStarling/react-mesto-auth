@@ -5,13 +5,14 @@ class Api {
   }
 
   _prepareData(res) {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject({
-      name: `Произошла ошибка на стороне сервера: ${res.status}, попробуйте снова.`,
-      isServerError: true,
-    });
+    return res.ok
+      ? res.json()
+      : Promise.reject({
+          name: `Произошла ошибка на стороне сервера: ${res.status}, ${
+            res.status === 404 ? `обратитесь в техническую поддержку нашего приложения` : `попробуйте позже`
+          }.`,
+          isServerError: true,
+        });
   }
 
   getUserInfo() {

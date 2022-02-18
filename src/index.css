@@ -70,6 +70,7 @@
 @import url(./blocks/popup/_opened/popup_opened.css);
 @import url(./blocks/popup/__title/popup__title.css);
 @import url(./blocks/popup/__title/_type/popup__title_type_noinputs.css);
+@import url(./blocks/popup/__title/_type/popup__title_type_centered.css);
 @import url(./blocks/popup/__container/popup__container.css);
 @import url(./blocks/popup/__input-container/popup__input-container.css);
 @import url(./blocks/popup/__item/popup__item.css);
@@ -90,4 +91,5 @@
 @import url(./blocks/popup/__btn/_inactive/popup__btn_inactive.css);
 
 @import url(./blocks/popup/__infotooltip/popup__infotooltip.css);
-@import url(./blocks/popup/__title/_type/popup__title_type_centered.css);
+@import url(./blocks/popup/__error/popup__error.css);
+@import url(./blocks/popup/__container/_type/popup__container_type_top.css);
