@@ -10,6 +10,16 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
     setUserInfo({ name, about });
   }, [name, about, isOpen]);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserInfo((prevState) => {
+      return {
+        ...prevState,
+        [name]: value,
+      };
+    });
+  };
+
   function handleSubmit(e) {
     e.preventDefault();
     onUpdateUser(userInfo);
@@ -28,7 +38,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
       <label className='popup__input-label'>
         <input
           value={userInfo.name}
-          onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
+          onChange={handleChange}
           autoComplete='off'
           type='text'
           className='popup__item popup__item_el_name'
@@ -44,7 +54,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
       <label className='popup__input-label'>
         <input
           value={userInfo.about}
-          onChange={(e) => setUserInfo({ ...userInfo, about: e.target.value })}
+          onChange={handleChange}
           type='text'
           className='popup__item popup__item_el_about'
           id='about'

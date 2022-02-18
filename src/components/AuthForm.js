@@ -2,13 +2,19 @@ import React, { useState } from 'react';
 import Form from './Form';
 
 function AuthForm({ children, onAuth, buttonText, name, title, ...props }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [login, setLogin] = useState({ password: '', email: '' });
 
-  function handleChange(e) {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    name === 'email' ? setEmail(value) : setPassword(value);
-  }
+    setLogin((prevState) => {
+      return {
+        ...prevState,
+        [name]: value,
+      };
+    });
+  };
+
+  const { email, password } = login;
 
   function handleSubmit(e) {
     e.preventDefault();

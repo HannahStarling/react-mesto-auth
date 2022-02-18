@@ -8,10 +8,22 @@ function AddPlacePopup({ isOpen, onClose, onAddCard }) {
     setNewCard({ name: '', link: '' });
   }, [isOpen]);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewCard((prevState) => {
+      return {
+        ...prevState,
+        [name]: value,
+      };
+    });
+  };
+
   function handleSubmit(e) {
     e.preventDefault();
     onAddCard(newCard);
   }
+
+  const { name, link } = newCard;
 
   return (
     <PopupWithForm
@@ -25,8 +37,8 @@ function AddPlacePopup({ isOpen, onClose, onAddCard }) {
     >
       <label className='popup__input-label'>
         <input
-          value={newCard.name}
-          onChange={(e) => setNewCard({ ...newCard, name: e.target.value })}
+          value={name}
+          onChange={handleChange}
           autoComplete='off'
           type='text'
           className='popup__item popup__item_el_title'
@@ -41,8 +53,8 @@ function AddPlacePopup({ isOpen, onClose, onAddCard }) {
       </label>
       <label className='popup__input-label'>
         <input
-          value={newCard.link}
-          onChange={(e) => setNewCard({ ...newCard, link: e.target.value })}
+          value={link}
+          onChange={handleChange}
           autoComplete='off'
           type='url'
           className='popup__item popup__item_el_link'
